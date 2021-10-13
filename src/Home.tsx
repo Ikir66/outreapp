@@ -7,7 +7,6 @@ import Alert from "@material-ui/lab/Alert";
 import { Grid, Typography } from "@material-ui/core";
 import * as anchor from "@project-serum/anchor";
 
-import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 
 import { useAnchorWallet } from "@solana/wallet-adapter-react";
 import { WalletDialogButton } from "@solana/wallet-adapter-material-ui";
@@ -42,15 +41,18 @@ const WhiteTextTypography = withStyles({
   }
 })(Typography);
 
+const WhitTextTypography = withStyles({
+  root: {
+    color: "#FFFFFF"
+  }
+})(Typography);
+
 
 const Home = (props: HomeProps) => {
-  const [balance, setBalance] = useState<number>();
   const [isActive, setIsActive] = useState(false); // true when countdown completes
   const [isSoldOut, setIsSoldOut] = useState(false); // true when items remaining is zero
   const [isMinting, setIsMinting] = useState(false); // true when user got to press MINT
 
-  const [itemsAvailable, setItemsAvailable] = useState(0);
-  const [itemsRedeemed, setItemsRedeemed] = useState(0);
   const [itemsRemaining, setItemsRemaining] = useState(0);
 
   const [alertState, setAlertState] = useState<AlertState>({
@@ -71,18 +73,14 @@ const Home = (props: HomeProps) => {
       const {
         candyMachine,
         goLiveDate,
-        itemsAvailable,
         itemsRemaining,
-        itemsRedeemed,
       } = await getCandyMachineState(
         wallet as anchor.Wallet,
         props.candyMachineId,
         props.connection
       );
 
-      setItemsAvailable(itemsAvailable);
       setItemsRemaining(itemsRemaining);
-      setItemsRedeemed(itemsRedeemed);
 
       setIsSoldOut(itemsRemaining === 0);
       setStartDate(goLiveDate);
@@ -148,10 +146,6 @@ const Home = (props: HomeProps) => {
         severity: "error",
       });
     } finally {
-      if (wallet) {
-        const balance = await props.connection.getBalance(wallet.publicKey);
-        setBalance(balance / LAMPORTS_PER_SOL);
-      }
       setIsMinting(false);
       refreshCandyMachineState();
     }
@@ -159,10 +153,6 @@ const Home = (props: HomeProps) => {
 
   useEffect(() => {
     (async () => {
-      if (wallet) {
-        const balance = await props.connection.getBalance(wallet.publicKey);
-        setBalance(balance / LAMPORTS_PER_SOL);
-      }
     })();
   }, [wallet, props.connection]);
 
@@ -195,9 +185,9 @@ const Home = (props: HomeProps) => {
         alignItems="center"
         justify="center"
       >
-        <WhiteTextTypography>
-          {<h1></h1>}
-        </WhiteTextTypography>
+        <WhitTextTypography>
+          {<h1>o</h1>}
+        </WhitTextTypography>
       </Grid>
       <Grid
         container
@@ -212,7 +202,7 @@ const Home = (props: HomeProps) => {
       </Grid>
       <MintContainer>
         {!wallet ? (
-          <ConnectButton>outré?</ConnectButton>
+          <ConnectButton>connect</ConnectButton>
         ) : (
           <MintButton
             disabled={isSoldOut || isMinting || !isActive}
