@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
+import { withStyles } from "@material-ui/core/styles";
 import styled from "styled-components";
 import Countdown from "react-countdown";
 import { Button, CircularProgress, Snackbar } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
-
+import { Grid, Typography } from "@material-ui/core";
 import * as anchor from "@project-serum/anchor";
 
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
@@ -16,7 +17,6 @@ import {
   awaitTransactionSignatureConfirmation,
   getCandyMachineState,
   mintOneToken,
-  shortenAddress,
 } from "./candy-machine";
 
 const ConnectButton = styled(WalletDialogButton)``;
@@ -35,6 +35,13 @@ export interface HomeProps {
   treasury: anchor.web3.PublicKey;
   txTimeout: number;
 }
+
+const WhiteTextTypography = withStyles({
+  root: {
+    color: "#b0b0b0"
+  }
+})(Typography);
+
 
 const Home = (props: HomeProps) => {
   const [balance, setBalance] = useState<number>();
@@ -105,30 +112,30 @@ const Home = (props: HomeProps) => {
         if (!status?.err) {
           setAlertState({
             open: true,
-            message: "Congratulations! Mint succeeded!",
+            message: "Mint succeeded",
             severity: "success",
           });
         } else {
           setAlertState({
             open: true,
-            message: "Mint failed! Please try again!",
+            message: "Mint failed",
             severity: "error",
           });
         }
       }
     } catch (error: any) {
       // TODO: blech:
-      let message = error.msg || "Minting failed! Please try again!";
+      let message = error.msg || "Minting failed. Please try again.";
       if (!error.msg) {
         if (error.message.indexOf("0x138")) {
         } else if (error.message.indexOf("0x137")) {
-          message = `SOLD OUT!`;
+          message = `Sold out.`;
         } else if (error.message.indexOf("0x135")) {
           message = `Insufficient funds to mint. Please fund your wallet.`;
         }
       } else {
         if (error.code === 311) {
-          message = `SOLD OUT!`;
+          message = `Sold out.`;
           setIsSoldOut(true);
         } else if (error.code === 312) {
           message = `Minting period hasn't started yet.`;
@@ -167,21 +174,45 @@ const Home = (props: HomeProps) => {
 
   return (
     <main>
-      {wallet && (
-        <p>Wallet {shortenAddress(wallet.publicKey.toBase58() || "")}</p>
-      )}
+        <WhiteTextTypography align="center">
+          {<h1>outré</h1>}
+        </WhiteTextTypography >
+        <WhiteTextTypography align="center">
+          {<h2>outré</h2>}
+        </WhiteTextTypography>
+        <WhiteTextTypography align="center">
+          {<h3>outré</h3>}
+        </WhiteTextTypography>
+        <WhiteTextTypography align="center">
+          {<h4>outré</h4>}
+        </WhiteTextTypography>
 
-      {wallet && <p>Balance: {(balance || 0).toLocaleString()} SOL</p>}
 
-      {wallet && <p>Total Available: {itemsAvailable}</p>}
-
-      {wallet && <p>Redeemed: {itemsRedeemed}</p>}
-
-      {wallet && <p>Remaining: {itemsRemaining}</p>}
-
+      <Grid
+        container
+        spacing={2}
+        direction="column"
+        alignItems="center"
+        justify="center"
+      >
+        <WhiteTextTypography>
+          {<h1></h1>}
+        </WhiteTextTypography>
+      </Grid>
+      <Grid
+        container
+        spacing={4}
+        direction="column"
+        alignItems="center"
+        justify="center"
+      >
+      <WhiteTextTypography>
+      {wallet && <p>{itemsRemaining} remaining</p>}
+    </WhiteTextTypography>
+      </Grid>
       <MintContainer>
         {!wallet ? (
-          <ConnectButton>Connect Wallet</ConnectButton>
+          <ConnectButton>outré?</ConnectButton>
         ) : (
           <MintButton
             disabled={isSoldOut || isMinting || !isActive}
@@ -189,12 +220,12 @@ const Home = (props: HomeProps) => {
             variant="contained"
           >
             {isSoldOut ? (
-              "SOLD OUT"
+              "sold out"
             ) : isActive ? (
               isMinting ? (
                 <CircularProgress />
               ) : (
-                "MINT"
+                "mint"
               )
             ) : (
               <Countdown
