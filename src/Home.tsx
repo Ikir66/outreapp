@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { withStyles } from "@material-ui/core/styles";
+
 import styled from "styled-components";
 import Countdown from "react-countdown";
 import { Button, CircularProgress, Snackbar } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
-import { Grid, Typography } from "@material-ui/core";
+
 import * as anchor from "@project-serum/anchor";
 
 
@@ -35,17 +35,6 @@ export interface HomeProps {
   txTimeout: number;
 }
 
-const WhiteTextTypography = withStyles({
-  root: {
-    color: "#b0b0b0"
-  }
-})(Typography);
-
-const WhitTextTypography = withStyles({
-  root: {
-    color: "#FFFFFF"
-  }
-})(Typography);
 
 
 const Home = (props: HomeProps) => {
@@ -164,42 +153,9 @@ const Home = (props: HomeProps) => {
 
   return (
     <main>
-        <WhiteTextTypography align="center">
-          {<h1>outré</h1>}
-        </WhiteTextTypography >
-        <WhiteTextTypography align="center">
-          {<h2>outré</h2>}
-        </WhiteTextTypography>
-        <WhiteTextTypography align="center">
-          {<h3>outré</h3>}
-        </WhiteTextTypography>
-        <WhiteTextTypography align="center">
-          {<h4>outré</h4>}
-        </WhiteTextTypography>
 
-
-      <Grid
-        container
-        spacing={2}
-        direction="column"
-        alignItems="center"
-        justify="center"
-      >
-        <WhitTextTypography>
-          {<h1>o</h1>}
-        </WhitTextTypography>
-      </Grid>
-      <Grid
-        container
-        spacing={4}
-        direction="column"
-        alignItems="center"
-        justify="center"
-      >
-      <WhiteTextTypography>
       {wallet && <p>{itemsRemaining} remaining</p>}
-    </WhiteTextTypography>
-      </Grid>
+
       <MintContainer>
         {!wallet ? (
           <ConnectButton>connect</ConnectButton>
