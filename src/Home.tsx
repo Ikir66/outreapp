@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 import styled from "styled-components";
 import Countdown from "react-countdown";
 import { Button, CircularProgress, Snackbar } from "@material-ui/core";
@@ -7,6 +6,7 @@ import Alert from "@material-ui/lab/Alert";
 
 import * as anchor from "@project-serum/anchor";
 
+import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 
 import { useAnchorWallet } from "@solana/wallet-adapter-react";
 import { WalletDialogButton } from "@solana/wallet-adapter-material-ui";
@@ -16,6 +16,7 @@ import {
   awaitTransactionSignatureConfirmation,
   getCandyMachineState,
   mintOneToken,
+  shortenAddress,
 } from "./candy-machine";
 
 const ConnectButton = styled(WalletDialogButton)``;
@@ -35,13 +36,14 @@ export interface HomeProps {
   txTimeout: number;
 }
 
-
-
 const Home = (props: HomeProps) => {
+  const [balance, setBalance] = useState<number>();
   const [isActive, setIsActive] = useState(false); // true when countdown completes
   const [isSoldOut, setIsSoldOut] = useState(false); // true when items remaining is zero
   const [isMinting, setIsMinting] = useState(false); // true when user got to press MINT
 
+  const [itemsAvailable, setItemsAvailable] = useState(0);
+  const [itemsRedeemed, setItemsRedeemed] = useState(0);
   const [itemsRemaining, setItemsRemaining] = useState(0);
 
   const [alertState, setAlertState] = useState<AlertState>({
@@ -62,14 +64,18 @@ const Home = (props: HomeProps) => {
       const {
         candyMachine,
         goLiveDate,
+        itemsAvailable,
         itemsRemaining,
+        itemsRedeemed,
       } = await getCandyMachineState(
         wallet as anchor.Wallet,
         props.candyMachineId,
         props.connection
       );
 
+      setItemsAvailable(itemsAvailable);
       setItemsRemaining(itemsRemaining);
+      setItemsRedeemed(itemsRedeemed);
 
       setIsSoldOut(itemsRemaining === 0);
       setStartDate(goLiveDate);
@@ -99,30 +105,30 @@ const Home = (props: HomeProps) => {
         if (!status?.err) {
           setAlertState({
             open: true,
-            message: "Mint succeeded",
+            message: "Congratulations! Mint succeeded!",
             severity: "success",
           });
         } else {
           setAlertState({
             open: true,
-            message: "Mint failed",
+            message: "Mint failed! Please try again!",
             severity: "error",
           });
         }
       }
     } catch (error: any) {
       // TODO: blech:
-      let message = error.msg || "Minting failed. Please try again.";
+      let message = error.msg || "Minting failed! Please try again!";
       if (!error.msg) {
         if (error.message.indexOf("0x138")) {
         } else if (error.message.indexOf("0x137")) {
-          message = `Sold out.`;
+          message = `SOLD OUT!`;
         } else if (error.message.indexOf("0x135")) {
           message = `Insufficient funds to mint. Please fund your wallet.`;
         }
       } else {
         if (error.code === 311) {
-          message = `Sold out.`;
+          message = `SOLD OUT!`;
           setIsSoldOut(true);
         } else if (error.code === 312) {
           message = `Minting period hasn't started yet.`;
@@ -135,6 +141,10 @@ const Home = (props: HomeProps) => {
         severity: "error",
       });
     } finally {
+      if (wallet) {
+        const balance = await props.connection.getBalance(wallet.publicKey);
+        setBalance(balance / LAMPORTS_PER_SOL);
+      }
       setIsMinting(false);
       refreshCandyMachineState();
     }
@@ -142,6 +152,10 @@ const Home = (props: HomeProps) => {
 
   useEffect(() => {
     (async () => {
+      if (wallet) {
+        const balance = await props.connection.getBalance(wallet.publicKey);
+        setBalance(balance / LAMPORTS_PER_SOL);
+      }
     })();
   }, [wallet, props.connection]);
 
@@ -153,12 +167,21 @@ const Home = (props: HomeProps) => {
 
   return (
     <main>
+      {wallet && (
+        <p>Wallet {shortenAddress(wallet.publicKey.toBase58() || "")}</p>
+      )}
 
-      {wallet && <p>{itemsRemaining} remaining</p>}
+      {wallet && <p>Balance: {(balance || 0).toLocaleString()} SOL</p>}
+
+      {wallet && <p>Total Available: {itemsAvailable}</p>}
+
+      {wallet && <p>Redeemed: {itemsRedeemed}</p>}
+
+      {wallet && <p>Remaining: {itemsRemaining}</p>}
 
       <MintContainer>
         {!wallet ? (
-          <ConnectButton>connect</ConnectButton>
+          <ConnectButton>Connect Wallet</ConnectButton>
         ) : (
           <MintButton
             disabled={isSoldOut || isMinting || !isActive}
@@ -166,12 +189,12 @@ const Home = (props: HomeProps) => {
             variant="contained"
           >
             {isSoldOut ? (
-              "sold out"
+              "SOLD OUT"
             ) : isActive ? (
               isMinting ? (
                 <CircularProgress />
               ) : (
-                "mint"
+                "MINT"
               )
             ) : (
               <Countdown
