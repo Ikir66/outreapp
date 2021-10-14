@@ -20,7 +20,7 @@ import {
 } from "@solana/wallet-adapter-react";
 
 import { WalletDialogProvider } from "@solana/wallet-adapter-material-ui";
-import { createTheme, ThemeProvider, Grid } from "@material-ui/core";
+import { createTheme, ThemeProvider } from "@material-ui/core";
 
 const treasury = new anchor.web3.PublicKey(
   process.env.REACT_APP_TREASURY_ADDRESS!
@@ -44,29 +44,9 @@ const startDateSeed = parseInt(process.env.REACT_APP_CANDY_START_DATE!, 10);
 const txTimeout = 30000; // milliseconds (confirm this works for your project)
 
 const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#FFFFFF',
+    palette: {
+        type: 'dark',
     },
-    secondary: {
-      main: '#000000',
-    },
-  },
-    typography: {
-    fontSize: 25,
-    fontFamily: [
-      '-apple-system',
-      'BlinkMacSystemFont',
-      '"Segoe UI"',
-      'Roboto',
-      '"Helvetica Neue"',
-      'Arial',
-      'sans-serif',
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
-    ].join(','),
-  },
     overrides: {
         MuiButtonBase: {
             root: {
@@ -75,14 +55,12 @@ const theme = createTheme({
         },
         MuiButton: {
             root: {
-                color: "#FFFFFF",
                 textTransform: undefined,
-                padding: '10px 60px',
+                padding: '12px 16px',
             },
             startIcon: {
                 marginRight: 8,
             },
-
             endIcon: {
                 marginLeft: 8,
             },
@@ -91,7 +69,6 @@ const theme = createTheme({
 });
 
 const App = () => {
-
   const endpoint = useMemo(() => clusterApiUrl(network), []);
 
   const wallets = useMemo(
@@ -106,14 +83,6 @@ const App = () => {
   );
 
   return (
-    <Grid
-      container
-      spacing={0}
-      direction="column"
-      alignItems="center"
-      justify="center"
-      style={{ minHeight: '100vh' }}
-    >
       <ThemeProvider theme={theme}>
         <ConnectionProvider endpoint={endpoint}>
           <WalletProvider wallets={wallets} autoConnect={true}>
@@ -130,7 +99,6 @@ const App = () => {
           </WalletProvider>
         </ConnectionProvider>
       </ThemeProvider>
-    </Grid>
   );
 };
 
