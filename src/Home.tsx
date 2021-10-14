@@ -186,7 +186,7 @@ const Home = (props: HomeProps) => {
         justify="center"
       >
         <WhitTextTypography>
-          {<h1>o</h1>}
+          {<h1> </h1>}
         </WhitTextTypography>
       </Grid>
       <Grid
