@@ -197,7 +197,7 @@ const Home = (props: HomeProps) => {
         justify="center"
       >
       <WhiteTextTypography>
-      {wallet && <p>{itemsRemaining} remaining</p>}
+      {wallet && <h5>{itemsRemaining} remaining</h5>}
     </WhiteTextTypography>
       </Grid>
       <MintContainer>
