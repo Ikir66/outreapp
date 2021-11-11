@@ -1,1 +1,1 @@
-outré
+outrés
