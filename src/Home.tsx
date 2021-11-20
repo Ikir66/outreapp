@@ -37,7 +37,7 @@ export interface HomeProps {
 
 const WhiteTextTypography = withStyles({
   root: {
-    color: "#b0b0b0"
+    color: "#000000"
   }
 })(Typography);
 
@@ -165,17 +165,9 @@ const Home = (props: HomeProps) => {
   return (
     <main>
         <WhiteTextTypography align="center">
-          {<h1>outré</h1>}
+          {<h1>Angomon</h1>}
         </WhiteTextTypography >
-        <WhiteTextTypography align="center">
-          {<h2>outré</h2>}
-        </WhiteTextTypography>
-        <WhiteTextTypography align="center">
-          {<h3>outré</h3>}
-        </WhiteTextTypography>
-        <WhiteTextTypography align="center">
-          {<h4>outré</h4>}
-        </WhiteTextTypography>
+        
 
 
       <Grid
