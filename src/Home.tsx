@@ -192,6 +192,13 @@ const Home = (props: HomeProps) => {
       {wallet && <h5>{itemsRemaining} remaining</h5>}
     </WhiteTextTypography>
       </Grid>
+      <Grid
+        container
+        spacing={4}
+        direction="column"
+        alignItems="center"
+        justify="center"
+      >
       <MintContainer>
         {!wallet ? (
           <ConnectButton>connect</ConnectButton>
@@ -220,7 +227,7 @@ const Home = (props: HomeProps) => {
           </MintButton>
         )}
       </MintContainer>
-
+      </Grid>
       <Snackbar
         open={alertState.open}
         autoHideDuration={6000}
